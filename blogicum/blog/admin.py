@@ -93,3 +93,10 @@ class LocationAdmin(BlogAdmin):
         "is_published",
         "created_at",
     )
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    """Админка для комментариев."""
+    list_display = ('text', 'post', 'author', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('text',)
