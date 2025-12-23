@@ -107,7 +107,7 @@ class PostDetailView(DetailView):
     def get_object(self):
         post = get_object_or_404(
             Post.objects.select_related("category", "author"),
-            pk=self.kwargs["pk"]
+            pk=self.kwargs["post_id"]
         )
 
         if self.request.user != post.author:
@@ -175,13 +175,16 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().author != request.user:
-            return redirect("blog:post_detail", pk=self.kwargs["pk"])
+            return redirect(
+                "blog:post_detail",
+                post_id=self.kwargs["post_id"]
+            )
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse(
             "blog:post_detail",
-            kwargs={"pk": self.kwargs["pk"]}
+            kwargs={"post_id": self.kwargs["post_id"]}
         )
 
 
@@ -191,7 +194,10 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().author != request.user:
-            return redirect("blog:post_detail", pk=self.kwargs["pk"])
+            return redirect(
+                "blog:post_detail",
+                post_id=self.kwargs["post_id"]
+            )
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -199,11 +205,6 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
             "blog:profile",
             kwargs={"username": self.request.user.username}
         )
-
-
-# ======================
-# КОММЕНТАРИИ
-# ======================
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
@@ -222,17 +223,10 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("blog:post_detail", kwargs={"pk": self.post.pk})
-
-    def send_author_email(self):
-        send_mail(
-            subject="New comment",
-            message=f"Новый комментарий к посту {self.post.title}",
-            from_email="from@example.com",
-            recipient_list=[self.post.author.email],
-            fail_silently=True,
+        return reverse(
+            "blog:post_detail",
+            kwargs={"post_id": self.post.pk}
         )
-
 
 class CommentUpdateView(CommentMixinView, UpdateView):
     form_class = CommentEditForm

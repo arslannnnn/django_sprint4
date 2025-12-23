@@ -1,75 +1,82 @@
 from django.urls import path
-
 from . import views
 
 app_name = "blog"
 
 urlpatterns = [
-    # Главная.
+    # Главная
     path(
         "",
         views.MainPostListView.as_view(),
         name="index",
     ),
-    # Категория.
+
+    # Категория
     path(
         "category/<slug:category_slug>/",
         views.CategoryPostListView.as_view(),
         name="category_posts",
     ),
-    # Посты опубликованные определенным пользователем.
-    # Для владельца страницы присутствует меню перехода на страницу
-    # редактированию профиля и страницу смены пароля.
+
+    # Профиль пользователя
     path(
-        "profile/<slug:username>/",
+        "profile/<str:username>/",
         views.UserPostsListView.as_view(),
         name="profile",
     ),
-    # Пост.
+
+    # Детальный просмотр поста
     path(
-        "posts/<int:pk>/",
+        "posts/<int:post_id>/",
         views.PostDetailView.as_view(),
         name="post_detail",
     ),
-    # Редактировать профиля пользователя.
+
+    # Редактирование профиля
     path(
         "edit_profile/",
         views.UserProfileUpdateView.as_view(),
         name="edit_profile",
     ),
-    # Создать пост.
+
+    # Создание поста
     path(
         "posts/create/",
         views.PostCreateView.as_view(),
         name="create_post",
     ),
-    # Редактировать пост.
+
+    # Редактирование поста
     path(
-        "posts/<int:pk>/edit/",
+        "posts/<int:post_id>/edit/",
         views.PostUpdateView.as_view(),
         name="edit_post",
     ),
-    # Удалить пост.
+
+    # Удаление поста
     path(
-        "posts/<int:pk>/delete/",
+        "posts/<int:post_id>/delete/",
         views.PostDeleteView.as_view(),
         name="delete_post",
     ),
-    # Добавить комментарий.
+
+    # Добавление комментария
     path(
-        "posts/<int:pk>/comment/",
+        "posts/<int:post_id>/comment/",
         views.CommentCreateView.as_view(),
         name="add_comment",
     ),
-    # Редактировать комментарий.
+
+    # Редактирование комментария
     path(
-        "posts/<int:pk>/edit_comment/<int:comment_pk>/",
+        "posts/<int:post_id>/edit_comment/<int:comment_id>/",
         views.CommentUpdateView.as_view(),
         name="edit_comment",
     ),
-    # Удалить комментарий
+
+    # Удаление комментария
     path(
-        "posts/<int:pk>/delete_comment/<int:comment_pk>/",
+        "posts/<int:post_id>/delete_comment/<int:comment_id>/",
         views.CommentDeleteView.as_view(),
         name="delete_comment",
     ),
